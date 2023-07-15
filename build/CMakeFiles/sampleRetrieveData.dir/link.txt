@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/sampleRetrieveData.dir/sampleRetrieveData.cpp.o  -o sampleRetrieveData  -Wl,-rpath,/home/yuxuan/Downloads/libroyale/bin /home/yuxuan/Downloads/libroyale/bin/libroyale.so.5.4.0 
