@@ -24,7 +24,7 @@ target_include_directories (sampleRetrieveData PRIVATE "/home/yuxuan/Downloads/l
 ```
 
 
-编译
+编译并运行
 ```
 cd /path/to/ROYALEFLEX2_CPP/build
 cmake ..
