@@ -9,7 +9,7 @@ def my_handler(channel, data):
     global counter
     msg = pcd_xyz.decode(data)
     pcd_data = np.array([msg.pcd_x,msg.pcd_y,msg.pcd_z])
-    pcd_data = (pcd_data-10000)/300.0
+    pcd_data = (pcd_data-10000)/300.0# int16_t to float
     counter += 1
     print("Frame{}".format(counter))
 

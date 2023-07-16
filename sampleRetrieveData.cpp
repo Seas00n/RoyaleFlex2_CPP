@@ -30,14 +30,31 @@ using namespace std;
 
 
 lcm::LCM lc;
-pcd_lcm::pcd_xyz pcd_data;
-int counter = 0;
-int total_seconds = 40; 
-void PublishLCM(pcd_lcm::pcd_xyz pcd_data){
-    lc.publish("PCD_DATA",&pcd_data);
-    counter += 1;
-    cout<<"Publish Frame: "<<counter<<endl;
+pcd_lcm::pcd_xyz pcd_msg;
+static int counter = 0;
+static const int total_seconds = 40; 
+static const int PCD_MSG_SIZE = (int)(sizeof(pcd_msg.pcd_x)/sizeof(int16_t));//发送的pcd_data数量
+
+void PublishLCM(const royale::DepthData* data){
+    cout<<"NumofPoints:"<<data->getNumPoints()<<endl;
+    if(data->getNumPoints()>=PCD_MSG_SIZE){
+        for(int j=0;j<PCD_MSG_SIZE;j++){
+            pcd_msg.pcd_x[j] = (int16_t)(data->getX(j)*300+10000);//float 2 int16
+            pcd_msg.pcd_y[j] = (int16_t)(data->getY(j)*300+10000);//float 2 int16
+            pcd_msg.pcd_z[j] = (int16_t)(data->getZ(j)*300+10000);//float 2 int16
+        }
+        lc.publish("PCD_DATA",&pcd_msg);
+        counter += 1;
+        cout<<"Publish Frame: "<<counter<<endl;
+    }   
 }
+
+
+
+
+
+
+
 /**
  * A listener which receives a callback to onNewData when each depth frame is captured.
  *
@@ -52,7 +69,6 @@ void PublishLCM(pcd_lcm::pcd_xyz pcd_data){
  * recorded files, then the sampleExportPLY shows a much simpler IDepthDataListener.
  */
 class MyListener : public royale::IDepthDataListener {
-    static const int PCD_MSG_SIZE = 38528;//发送的pcd_data数量
     /**
      * The output is scaled to fit in a terminal of this size. Although this is bigger than the
      * normal default size of 24 lines, a user with a smaller terminal is likely to scroll upwards
@@ -163,15 +179,14 @@ class MyListener : public royale::IDepthDataListener {
             receivedData.asciiFrame.swap(asciiFrame);
             receivedData.exposureTimes = exposureTimes.toStdVector();
         }
-        cout<<"NumofPoints:"<<data->getNumPoints()<<endl;
-        if(data->getNumPoints()>=PCD_MSG_SIZE){
-            for(int j=0;j<PCD_MSG_SIZE;j++){
-                pcd_data.pcd_x[j] = (int16_t)(data->getX(j)*300+10000);
-                pcd_data.pcd_y[j] = (int16_t)(data->getY(j)*300+10000);
-                pcd_data.pcd_z[j] = (int16_t)(data->getZ(j)*300+10000);
-            }
-            PublishLCM(pcd_data);
-        }   
+
+        ////////////////////////////////////////////////////////
+        PublishLCM(data);
+        /////////////////////////////////////////////////////////////
+
+
+
+        
         // In a full application, the call below to paint() should be done in a separate thread, as
         // explained in the comment above.  UI toolkits are expected to provide a method to
         // request an asynchronous repaint of the screen, without blocking onNewData().
