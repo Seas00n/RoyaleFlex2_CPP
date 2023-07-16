@@ -3,8 +3,9 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
-                
+                "${workspaceFolder}/**",
+                "/home/yuxuan/Downloads/libroyale/include/**",
+                "/home/yuxuan/Downloads/libroyale/samples/inc/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang-12",

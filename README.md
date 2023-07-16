@@ -28,6 +28,27 @@ target_include_directories (sampleRetrieveData PRIVATE "/home/yuxuan/Downloads/l
 ```
 cd /path/to/ROYALEFLEX2_CPP/build
 cmake ..
-make .
+make
 ./sampleReceiveData
 ```
+
+vscode编辑前`ctrl+shift+P`选择`c/c++:Edit Configurations(JSON)`生成`c_cpp_properties.json`,配置`includePath`
+```
+"includePath": [
+                "${workspaceFolder}/**",
+                "/home/yuxuan/Downloads/libroyale/include/**",
+                "/home/yuxuan/Downloads/libroyale/samples/inc/**"
+            ],
+```
+即可找到对应的头文件
+
+‵‵
+LCM缓冲区小
+``
+sudo gedit /etc/sysctl.conf
+=====添加=====
+net.core.rmem_max=2097152
+net.core.rmem_default=2097152
+=====更新配置====
+sudo sysctl -p
+``

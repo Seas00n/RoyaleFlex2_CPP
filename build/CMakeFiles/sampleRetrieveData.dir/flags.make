@@ -6,5 +6,5 @@ CXX_FLAGS =   -std=gnu++17
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/yuxuan/Downloads/libroyale/samples/inc -isystem /home/yuxuan/Downloads/libroyale/include 
+CXX_INCLUDES = -I/home/yuxuan/Project/RoyaleFlex2_CPP/lcm_msg/pcd_lcm -I/home/yuxuan/Downloads/libroyale/samples/inc -isystem /home/yuxuan/Downloads/libroyale/include 
 

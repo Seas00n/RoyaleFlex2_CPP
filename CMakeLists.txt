@@ -6,10 +6,12 @@ project (sampleRetrieveData)
 
 find_package (royale REQUIRED)
 
+include_directories(lcm_msg/pcd_lcm)
+
 add_executable (sampleRetrieveData sampleRetrieveData.cpp)
 
 target_include_directories (sampleRetrieveData PRIVATE "/home/yuxuan/Downloads/libroyale/samples/inc")
 
 copy_royale_libs (sampleRetrieveData)
 
-target_link_libraries (sampleRetrieveData royale::royale)
+target_link_libraries (sampleRetrieveData royale::royale lcm)

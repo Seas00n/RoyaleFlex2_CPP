@@ -10,6 +10,7 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "../lcm_msg/pcd_lcm"
   "/home/yuxuan/Downloads/libroyale/samples/inc"
   "/home/yuxuan/Downloads/libroyale/include"
   )

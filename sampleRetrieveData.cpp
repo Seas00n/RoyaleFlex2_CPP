@@ -21,10 +21,23 @@
 #include <thread>
 
 #include <sample_utils/PlatformResources.hpp>
+#include <pcd_xyz.hpp>
+#include <lcm/lcm-cpp.hpp>
 
 using namespace sample_utils;
 using namespace std;
 
+
+
+lcm::LCM lc;
+pcd_lcm::pcd_xyz pcd_data;
+int counter = 0;
+int total_seconds = 40; 
+void PublishLCM(pcd_lcm::pcd_xyz pcd_data){
+    lc.publish("PCD_DATA",&pcd_data);
+    counter += 1;
+    cout<<"Publish Frame: "<<counter<<endl;
+}
 /**
  * A listener which receives a callback to onNewData when each depth frame is captured.
  *
@@ -39,20 +52,21 @@ using namespace std;
  * recorded files, then the sampleExportPLY shows a much simpler IDepthDataListener.
  */
 class MyListener : public royale::IDepthDataListener {
+    static const int PCD_MSG_SIZE = 38528;//发送的pcd_data数量
     /**
      * The output is scaled to fit in a terminal of this size. Although this is bigger than the
      * normal default size of 24 lines, a user with a smaller terminal is likely to scroll upwards
      * and understand the data that they're seeing. Limiting it to 24 lines makes the image much
      * harder to understand.
      */
-    static const size_t MAX_HEIGHT = 40;
+    static const size_t MAX_HEIGHT = 50;
     /**
      * The output is scaled to fit in a terminal of this size. Here a terminal size of at least 80
      * columns is assumed, and a user with a narrower terminal window will get a very confusing
      * picture; but with all the wrapped-round lines being the same length the user will hopefully
      * understand that a larger window is required.
      */
-    static const size_t MAX_WIDTH = 76;
+    static const size_t MAX_WIDTH = 50;
 
     /**
      * Helper function to display the image as basic ASCII art.
@@ -149,7 +163,15 @@ class MyListener : public royale::IDepthDataListener {
             receivedData.asciiFrame.swap(asciiFrame);
             receivedData.exposureTimes = exposureTimes.toStdVector();
         }
-
+        cout<<"NumofPoints:"<<data->getNumPoints()<<endl;
+        if(data->getNumPoints()>=PCD_MSG_SIZE){
+            for(int j=0;j<PCD_MSG_SIZE;j++){
+                pcd_data.pcd_x[j] = (int16_t)(data->getX(j)*300+10000);
+                pcd_data.pcd_y[j] = (int16_t)(data->getY(j)*300+10000);
+                pcd_data.pcd_z[j] = (int16_t)(data->getZ(j)*300+10000);
+            }
+            PublishLCM(pcd_data);
+        }   
         // In a full application, the call below to paint() should be done in a separate thread, as
         // explained in the comment above.  UI toolkits are expected to provide a method to
         // request an asynchronous repaint of the screen, without blocking onNewData().
@@ -420,7 +442,7 @@ int main(int argc, char **argv) {
     }
 
     // let the camera capture for some time
-    this_thread::sleep_for(chrono::seconds(5));
+    this_thread::sleep_for(chrono::seconds(0));
 
     // Change the exposure time for the first stream of the use case (Royale will limit this to an
     // eye-safe exposure time, with limits defined by the use case).  The time is given in
@@ -435,7 +457,7 @@ int main(int argc, char **argv) {
     }
 
     // let the camera capture for some time
-    this_thread::sleep_for(chrono::seconds(5));
+    this_thread::sleep_for(chrono::seconds(total_seconds));//每秒15帧
 
     // stop capture mode
     if (cameraDevice->stopCapture() != royale::CameraStatus::SUCCESS) {
