@@ -36,8 +36,8 @@ vscode编辑前`ctrl+shift+P`选择`c/c++:Edit Configurations(JSON)`生成`c_cpp
 ```
 "includePath": [
                 "${workspaceFolder}/**",
-                "/home/yuxuan/Downloads/libroyale/include/**",
-                "/home/yuxuan/Downloads/libroyale/samples/inc/**"
+                "/home/xxx/Downloads/libroyale/include/**",
+                "/home/xxx/Downloads/libroyale/samples/inc/**"
             ],
 ```
 即可找到对应的头文件
